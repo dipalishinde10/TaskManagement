@@ -12,5 +12,9 @@ import com.TaskManagement.Enum.IssueStatus;
 public interface WorkFlowTransactionRepository extends JpaRepository<WorkFlowTransaction,Long> {
 	
 
-	Optional<WorkFlowTransaction>finfByWorkFlowIdAndFromStatusandToStatus(Long workFlowId,IssueStatus fromStatus,IssueStatus toStatus);
+	Optional<WorkFlowTransaction> findByWorkFlowIdAndFromStatusAndToStatus(
+	        Long workFlowId,
+	        IssueStatus fromStatus,
+	        IssueStatus toStatus
+	);
 }

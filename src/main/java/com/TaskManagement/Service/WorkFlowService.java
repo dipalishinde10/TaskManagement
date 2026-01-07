@@ -31,7 +31,7 @@ public class WorkFlowService {
 		WorkFlow wf= new WorkFlow();
 		wf.setName(name);
 		for(WorkFlowTransaction t: transactions) {
-			t.setWorkflow(wf);
+			t.setWorkFlow(wf);
 		}
 		wf.setTransactions(transactions);
 		return workFlowRepo.save(wf);
@@ -48,7 +48,7 @@ public class WorkFlowService {
 	
 	public boolean isTransactionAllowed(Long workFlowId,IssueStatus fromStatus,IssueStatus toStatus,Set<Role>userRole) {
 		
-		WorkFlowTransaction wft= transactionRepo.finfByWorkFlowIdAndFromStatusandToStatus(workFlowId, fromStatus, toStatus)
+		WorkFlowTransaction wft= transactionRepo.findByWorkFlowIdAndFromStatusAndToStatus(workFlowId, fromStatus, toStatus)
 				               .orElseThrow(()-> new RuntimeException("Transaction not defined:"+fromStatus+"->"+toStatus));
 		
 		boolean allowed= userRole.stream().anyMatch(wft.getRole()::contains);

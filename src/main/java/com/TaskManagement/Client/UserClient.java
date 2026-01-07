@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.TaskManagement.Enum.Role;
 
 
-@FeignClient(name = "user_service")
+@FeignClient(name = "user-service", url = "${user_service.url}")
 
 public interface UserClient {
 	@GetMapping("/api/users/{userOfficialEmail}/roles")

@@ -31,9 +31,10 @@ public class WorkFlowTransaction {
 	private Set<Role> role;
 	
 	
-	@ManyToOne
-	@JoinColumn(name="workFlow_id")
-	private WorkFlow workflow;
+	@ManyToOne(fetch = FetchType.LAZY)
+
+	@JoinColumn(name = "workflow_id", nullable = false)
+	private WorkFlow workFlow;
 
 
 	public Long getId() {
@@ -86,14 +87,17 @@ public class WorkFlowTransaction {
 	}
 
 
-	public WorkFlow getWorkflow() {
-		return workflow;
+	public WorkFlow getWorkFlow() {
+		return workFlow;
 	}
 
 
-	public void setWorkflow(WorkFlow workflow) {
-		this.workflow = workflow;
+	public void setWorkFlow(WorkFlow workFlow) {
+		this.workFlow = workFlow;
 	}
+
+
+	
 	
 	
 	

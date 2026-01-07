@@ -43,29 +43,29 @@ public class BoardService {
 		return boardRepo.findById(id);
 	}
 	public List<BoardColumn>getByColumns(Long id){
-		return boardColumnRepo.findByOrderedByPosition(id);
+		return boardColumnRepo.findByBoardIdOrderByPosition(id);
 				
 		
 	}
 	public List<BoardCard>getCardsForColumn(Long boardId,Long columnId){
-		return boardCardRepo.findByBoardIdAndColumnIdOrderPosition(boardId, columnId);
+		return boardCardRepo.findByBoardIdAndColumn_IdOrderByPosition(boardId, columnId);
 		
 	}
 	@Transactional
 	public BoardCard addIssueToBoard(Long boardId,Long columnId,Long issueId) {
-		Issue issue= issueRepo.finById(issueId).orElseThrow(()->new RuntimeException("Issue not found"));
+		Issue issue= issueRepo.findById(issueId).orElseThrow(()->new RuntimeException("Issue not found"));
 		
 		boardCardRepo.findByIssueId(issueId).ifPresent(boardCardRepo::delete);
 		BoardColumn column=boardColumnRepo.findById(columnId).orElseThrow(()->new RuntimeException("Column not found"));
 		
 		
 		if(column.getWipeLimit()!=null && column.getWipeLimit()>0) {
-			long count= boardCardRepo.countByBoardIdColumnId(boardId, columnId);
+			long count= boardCardRepo.countByBoardIdAndColumn_Id(boardId, columnId);
 			if(count >= column.getWipeLimit()) {
-				throw new RuntimeException("Wipe limit reached for column:"+column.getBoardName());
+				throw new RuntimeException("Wipe limit reached for column:"+column.getColumnName());
 			}
 		}
-		List<BoardCard> existing=boardCardRepo.findByBoardIdAndColumnIdOrderPosition(boardId, columnId);
+		List<BoardCard> existing=boardCardRepo.findByBoardIdAndColumn_IdOrderByPosition(boardId, columnId);
 		int pos=existing.size();
 		BoardCard card = new BoardCard();
 		card.setBoardId(boardId);
@@ -97,15 +97,15 @@ public class BoardService {
 		BoardColumn to=boardColumnRepo.findById(columnId).orElseThrow(()->new RuntimeException("Card not found"));
 		
 		if(to.getWipeLimit()!=null && to.getWipeLimit()>0) {
-			long count= boardCardRepo.countByBoardIdColumnId(boardId, columnId);
+			long count= boardCardRepo.countByBoardIdAndColumn_Id(boardId, columnId);
 			if(!Objects.equals(from.getId(), to.getId())&& count>=to.getWipeLimit()) {
-				throw new RuntimeException("Wipe limit exceeded"+to.getBoardName());
+				throw new RuntimeException("Wipe limit exceeded"+to.getColumnName());
 
 			}
 			
 			
 		}
-		List<BoardCard> fromList=boardCardRepo.findByBoardIdAndColumnIdOrderPosition(boardId, from.getId());
+		List<BoardCard> fromList=boardCardRepo.findByBoardIdAndColumn_IdOrderByPosition(boardId, from.getId());
 		
 		for(BoardCard bc : fromList) {
 			if(bc.getPosition()>card.getPosition()) {
@@ -113,7 +113,7 @@ public class BoardService {
 				boardCardRepo.save(bc);
 			}
 		}
-		List<BoardCard> toList=boardCardRepo.findByBoardIdAndColumnIdOrderPosition(boardId, to.getId());
+		List<BoardCard> toList=boardCardRepo.findByBoardIdAndColumn_IdOrderByPosition(boardId, to.getId());
 		for(BoardCard bc : toList) {
 			if(bc.getPosition()>= toPosition()) {
 				bc.setPosition(bc.getPosition()+1);
@@ -125,7 +125,7 @@ public class BoardService {
 	card.setPosition(toPosition);
 	boardCardRepo.save(card);
 	
-	Issue issue= issueRepo .finById(card.getIssueId()).orElseThrow(()->new RuntimeException("Issue not found"));
+	Issue issue= issueRepo .findById(card.getIssueId()).orElseThrow(()->new RuntimeException("Issue not found"));
 	if(to.getStatusKey()!=null) {
 		issue.setIssueStatus(Enum.valueOf(com.TaskManagement.Enum.IssueStatus.class,to.getStatusKey()));
 		

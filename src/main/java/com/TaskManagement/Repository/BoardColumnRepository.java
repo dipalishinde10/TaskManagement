@@ -11,7 +11,6 @@ import com.TaskManagement.Entity.BoardColumn;
 
 
 @Repository
-public interface BoardColumnRepository extends JpaRepository<BoardColumn,Long> {
-	List<BoardColumn>findByOrderedByPosition(Long boardId);
-
+public interface BoardColumnRepository extends JpaRepository<BoardColumn, Long> {
+    List<BoardColumn> findByBoardIdOrderByPosition(Long boardId);
 }

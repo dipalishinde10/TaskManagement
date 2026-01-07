@@ -28,7 +28,7 @@ public class ReportingService {
 	public Map<String,Object> burnDown(Long sprintId){
 		
 		Sprint sprint = sprintRepo.findById(sprintId).orElseThrow(()-> new RuntimeException("sprint not found "));
-		List<Issue> issues= issueRepo.findBySpintId(sprintId);
+		List<Issue> issues= issueRepo.findBySprintId(sprintId);
 		
 		int total = issues.size();
 		Map<String,Object> chart =new HashMap<>();
@@ -55,14 +55,14 @@ public class ReportingService {
 	
 	public Map<String,Object >velocity(Long projectId){
 		
-		List<Sprint> Completed= sprintRepo.findByProjectId(projectId).stream().filter(i->i.getState()== SprintState.COMPLETED)
+		List<Sprint> Completed= sprintRepo.findById(projectId).stream().filter(i->i.getSprintState()== SprintState.COMPLETED)
 				.collect(Collectors.toList());
 				
 		
 	Map<String,Integer> velocity= new LinkedHashMap<>();
 	
 	for(Sprint s:Completed) {
-		int done =(int)issueRepo.findBySpintId(s.getId()).stream().filter(i-> i.getIssueStatus()== IssueStatus.DONE).count();
+		int done =(int)issueRepo.findBySprintId(s.getId()).stream().filter(i-> i.getIssueStatus()== IssueStatus.DONE).count();
 		
 		velocity.put(s.getSprintName(),done);
 	}

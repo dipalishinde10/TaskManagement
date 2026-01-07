@@ -31,7 +31,7 @@ public class SprintService {
 	
 	
 	public Sprint createSprint(Sprint sprint) {
-		sprint.setState(SprintState.PLANNED);
+		sprint.setSprintState(SprintState.PLANNED);
 		return sprintRepo.save(sprint);
 	}
 	
@@ -44,7 +44,7 @@ public class SprintService {
 		
 		Issue issue = issueRepo.findById(issueId).orElseThrow(()-> new RuntimeException("Issue not found"));
 		
-		if(sprint.getState()== SprintState.COMPLETED) {
+		if(sprint.getSprintState()== SprintState.COMPLETED) {
 			throw new RuntimeException("can not add task to complete sprint");
 		}
 		
@@ -62,11 +62,11 @@ public class SprintService {
 		
 		Sprint sprint = sprintRepo.findById(sprintId).orElseThrow(()-> new RuntimeException("Sprint not found"));
 		
-		if(sprint.getState()==SprintState.PLANNED) {
+		if(sprint.getSprintState()==SprintState.PLANNED) {
 			throw new RuntimeException("Only PLANNED sprint can be start");
 			
 		}
-		sprint.setState(SprintState.ACTIVE);
+		sprint.setSprintState(SprintState.ACTIVE);
 		
 		if(sprint.getStartDate()== null) {
 			sprint.setStartDate(LocalDateTime.now());
@@ -82,13 +82,13 @@ public class SprintService {
 		
 		Sprint sprint = sprintRepo.findById(sprintId).orElseThrow(()-> new RuntimeException("Sprint not found"));
 		
-		sprint.setState(SprintState.COMPLETED);
+		sprint.setSprintState(SprintState.COMPLETED);
 		
 		if(sprint.getEndDate()== null) {
 			sprint.setEndDate(LocalDateTime.now());
 		}
 		
-		List<Issue> issues= issueRepo.findBySpintId(sprintId);
+		List<Issue> issues= issueRepo.findBySprintId(sprintId);
 		
 		
 		for(Issue issue :issues) {
@@ -109,7 +109,7 @@ public class SprintService {
 		LocalDateTime  start = sprint.getStartDate();
 		LocalDateTime end = sprint.getEndDate()!=null? sprint.getEndDate():LocalDateTime.now(); 
 		
-		List<Issue> issues = issueRepo.findBySpintId(sprintId);
+		List<Issue> issues = issueRepo.findBySprintId(sprintId);
 		
 		int totalTasks= issues.size();
 		

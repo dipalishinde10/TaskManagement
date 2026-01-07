@@ -11,6 +11,6 @@ import com.TaskManagement.Enum.SprintState;
 @Repository
 public interface SprintRepository extends JpaRepository<Sprint,Long>{
 
-	List<Sprint>findByProjectId(Long projectId);
-	List<Sprint>findBySprintState(SprintState sprintState);
+	//List<Sprint> findByProject_Id(Long projectId);
+    List<Sprint> findBySprintState(SprintState sprintState);
 }

@@ -30,11 +30,11 @@ public class BackLogService {
 	private SprintRepository sprintRepo;
 	
 	public List<Issue>getBackLog(Long projectId){
-		if(projectId== null) {
-			return issueRepo.findByProjectIdAndSprintIdOrderByBacklogPosition(projectId);
+		
+	        return issueRepo.findByProjectIdOrderByBackLogPosition(projectId);
 		}
-		return issueRepo.findByProjectIdAndSprintIdOrderByBacklogPosition(projectId);
-	}
+        
+	
 	
 	@Transactional
 	public void recordBacklog(Long projectId, List<Long>orderIssueId) {
@@ -53,7 +53,7 @@ public class BackLogService {
 		Issue issue = issueRepo.findById(issueId).orElseThrow(()-> new RuntimeException("Issue not found"));
 		Sprint sprint = sprintRepo.findById(sprintId).orElseThrow(()-> new RuntimeException("Sprint not found"));
 		
-		SprintState status= sprint.getState();
+		SprintState status= sprint.getSprintState();
 		if(status!=SprintState.PLANNED && status != SprintState.ACTIVE ) {
 			throw new RuntimeException("Can not add issue to sprint in state : "+status);
 			
@@ -66,25 +66,20 @@ public class BackLogService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Map<String,Object>getBackLogHierarchy(Long projectId){
-		
-		List<Issue>backLog= getBackLog(projectId);
-		Map<Long,Map<String,Object>>epicMap= new LinkedHashMap<>();
-		
-		
-		for(Issue i :backLog) {
-			if(i.getIssueType() !=null && "EPIC".equalsIgnoreCase(i.getIssueType().name())) {
-				
-				Map<String,Object>data=new LinkedHashMap<>();
-				data.put("epic", i);
-				data.put("stories", new ArrayList<Issue>());
-				data.put("subtask", new HashMap<Long,List<Issue>>());
-				epicMap.put(i.getId(), data);
-				
-			}
-			
-			
-		}
+	public Map<String, Object> getBackLogHierarchy(Long projectId) {
+	    List<Issue> backLog = getBackLog(projectId);
+
+	    Map<Long, Map<String, Object>> epicMap = new LinkedHashMap<>();
+
+	    for (Issue i : backLog) {
+	        if (i.getIssueType() != null && "EPIC".equalsIgnoreCase(i.getIssueType().name())) {
+	            Map<String, Object> data = new LinkedHashMap<>();
+	            data.put("epic", i);
+	            data.put("stories", new ArrayList<Issue>());
+	            data.put("subtask", new HashMap<Long, List<Issue>>());
+	            epicMap.put(i.getId(), data);
+	        }
+	    }
 		
 		
 		
@@ -106,7 +101,7 @@ public class BackLogService {
 			
 			if(i.getIssueType() !=null && "SUBTASK".equalsIgnoreCase(i.getIssueType().name()) ) {
 				
-				Issue parent = i.getSourceIssue();
+				Issue parent = i.getSourceIssueId();
 				
 				if(parent != null) continue;
 				

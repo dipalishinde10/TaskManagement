@@ -23,6 +23,9 @@ public class Issue {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@Column(nullable = false)
+    private Long projectId; 
+	
 	@Column(unique=true,nullable=false)
 	private String issueKey;
 	
@@ -65,7 +68,7 @@ public class Issue {
 	
 	@ManyToOne
 	@JoinColumn(name="source_issue_id",nullable=false)
-	private Issue sourceIssue;
+	private Issue sourceIssueId;
 	
 	@ManyToOne
 	@JoinColumn(name="target_issue_id",nullable=false)
@@ -171,11 +174,11 @@ public class Issue {
 	public void setLables(Set<Lable> lables) {
 		this.lables = lables;
 	}
-	public Issue getSourceIssue() {
-		return sourceIssue;
+	public Issue getSourceIssueId() {
+		return sourceIssueId;
 	}
-	public void setSourceIssue(Issue sourceIssue) {
-		this.sourceIssue = sourceIssue;
+	public void setSourceIssueId(Issue sourceIssueId) {
+		this.sourceIssueId = sourceIssueId;
 	}
 	public Issue getTargetIssueId() {
 		return targetIssueId;

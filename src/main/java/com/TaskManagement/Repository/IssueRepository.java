@@ -13,10 +13,12 @@ public interface IssueRepository extends JpaRepository<Issue,Long> {
 	
 	Optional<Issue>findByIssueKey(String issueKey);
 	List<Issue>findByAssignedEmail(String assignedEmail);
-	List<Issue>findBySpintId(Long spintId);
-	List<Issue>findByEpcId(Long epicId);
+	List<Issue> findBySprintId(Long sprintId);
+	List<Issue>findByEpicId(Long epicId);
 	List<Issue>findByIssueStatus(IssueStatus status);
-	Optional<Issue>finById(Long id);
+	Optional<Issue>findById(Long id);
 
-	List<Issue>findByProjectIdAndSprintIdOrderByBacklogPosition(Long projectId);
+	List<Issue> findByProjectIdOrderByBackLogPosition(Long projectId);
+    List<Issue> findByProjectIdAndSprintIdOrderByBackLogPosition(Long projectId, Long sprintId);
+
 }

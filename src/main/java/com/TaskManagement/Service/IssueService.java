@@ -106,10 +106,10 @@ public class IssueService {
 	}
 	
 	public List<IssueDTO>getBySprint(Long sprintId){
-		return issueRepo.findBySpintId(sprintId).stream().map(this::toDTO).collect(Collectors.toList());
+		return issueRepo.findBySprintId(sprintId).stream().map(this::toDTO).collect(Collectors.toList());
 	}
 	public List<IssueDTO>getByEpicId(Long epcId){
-		return issueRepo.findByEpcId(epcId).stream().map(this::toDTO).collect(Collectors.toList());
+		return issueRepo.findByEpicId(epcId).stream().map(this::toDTO).collect(Collectors.toList());
 	}
 	
 	@Transactional

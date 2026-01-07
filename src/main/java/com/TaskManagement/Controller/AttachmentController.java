@@ -1,43 +1,42 @@
 package com.TaskManagement.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.TaskManagement.Entity.Attachment;
 import com.TaskManagement.Service.AttachmentService;
 
 @RestController
-@RequestMapping("/api/file_upload")
+@RequestMapping("/api/attachments")
 public class AttachmentController {
-	
-	@Autowired
-	private AttachmentService attachmentService;
-	
-	@PostMapping("/upload")
-	public ResponseEntity<Attachment>ulpoad(@RequestParam Long issueId,@RequestParam MultipartFile file,@RequestParam String uploadedBy){
-		Attachment saved = attachmentService.upload(issueId, file, uploadedBy);
-		return ResponseEntity.ok(saved);
-	}
-	
-	@GetMapping("/{id}/download")
-	public ResponseEntity<byte[]>download(@PathVariable Long id){
-		
-		byte[] data = attachmentService.download(id);
-		String fileName= attachmentService.getDownloadByFileName(id);
-		String contentType = attachmentService.getdownloadByContentType(id);
-		
-		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION,"attachment; fileNmae=\""+ fileName+"\"")
-				.contentType(MediaType.parseMediaType(contentType)).body(data);
-	}
 
+    private final AttachmentService attachmentService;
+
+    public AttachmentController(AttachmentService attachmentService) {
+        this.attachmentService = attachmentService;
+    }
+
+    // Upload file
+    @PostMapping("/upload")
+    public ResponseEntity<String> upload(@RequestParam("file") MultipartFile file,
+                                         @RequestParam(value = "folder", defaultValue = "default") String folder) {
+        String fileUrl = attachmentService.uploadFile(file, folder);
+        return ResponseEntity.ok(fileUrl);
+    }
+
+    // Optional: Download file bytes
+    @GetMapping("/download")
+    public ResponseEntity<byte[]> download(@RequestParam("url") String fileUrl) {
+        byte[] data = attachmentService.getFile(fileUrl);
+        String fileName = attachmentService.getFileName(fileUrl);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData(fileName, fileName);
+
+        return new ResponseEntity<>(data, headers, HttpStatus.OK);
+    }
 }

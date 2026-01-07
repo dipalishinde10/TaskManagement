@@ -40,14 +40,14 @@ public class BoardController {
 		
 	}
 	@GetMapping("/{id}/columns")
-	public ResponseEntity<List<BoardColumn>> getBoardByColumn(@PathVariable Long id){
-		return ResponseEntity.ok(boardService.getByColumns(id));
-	}
+	public List<BoardColumn> getColumns(@PathVariable Long id) {
+        return boardService.getByColumns(id);
+    }
 	@PostMapping("/{id}/columns")
 	public ResponseEntity<Board> addColumn(@PathVariable Long id,@RequestBody BoardColumn boardColumn){
-		boardColumn.setBoardId(boardService.findById(id).orElseThrow(()->new RuntimeException("Board not found")));
+		boardColumn.setBoard(boardService.findById(id).orElseThrow(()->new RuntimeException("Board not found")));
 		
-		return ResponseEntity.ok(boardService.createBoard(boardColumn.getBoardId()));
+		return ResponseEntity.ok(boardService.createBoard(boardColumn.getBoard()));
 	
 	}
 	@PostMapping("/{id}/cards")

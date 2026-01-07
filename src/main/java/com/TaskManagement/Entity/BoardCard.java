@@ -15,7 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="board_columns",indexes= {@Index(columnList="board_id,column_id,position")})
+@Table(name="board_cards",indexes= {@Index(columnList="board_id,column_id,position")})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,7 +30,7 @@ public class BoardCard {
 	private Long boardId;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="column")
+	@JoinColumn(name="column_id")
 
 	private BoardColumn column;
 	

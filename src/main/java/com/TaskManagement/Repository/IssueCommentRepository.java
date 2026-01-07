@@ -9,6 +9,6 @@ import com.TaskManagement.Entity.IssueComments;
 @Repository
 public interface IssueCommentRepository extends JpaRepository<IssueComments,Long> {
 	
-	List<IssueComments>findByIssueOrderByCreatedAt(Long issueId);
+	List<IssueComments> findByIssueIdOrderByCreatedAt(Long issueId);
 
 }

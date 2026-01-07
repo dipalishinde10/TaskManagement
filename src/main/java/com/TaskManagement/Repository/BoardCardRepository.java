@@ -15,9 +15,11 @@ import com.TaskManagement.Entity.BoardCard;
 @Repository
 public interface BoardCardRepository extends JpaRepository<BoardCard,Long> {
 	
-	List<BoardCard>findByBoardIdAndColumnIdOrderPosition(Long boardId,Long columnId);
-	Optional<BoardCard>findByIssueId(Long issueId);
-	long countByBoardIdColumnId(Long boardId,Long columnId);
+	long countByBoardIdAndColumn_Id(Long boardId, Long columnId);
+
+    List<BoardCard> findByBoardIdAndColumn_IdOrderByPosition(Long boardId, Long columnId);
+
+    Optional<BoardCard> findByIssueId(Long issueId);
 
 
 }

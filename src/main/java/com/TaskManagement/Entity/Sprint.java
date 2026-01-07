@@ -20,7 +20,10 @@ public class Sprint {
 	private LocalDateTime endDate;
 	
 	@Enumerated(EnumType.STRING)
-	private SprintState state=SprintState.PLANNED;
+	 private SprintState sprintState;
+	
+	
+	
 	
 	@Column(length=5000)
 	private String goal;
@@ -61,12 +64,14 @@ public class Sprint {
 		this.endDate = endDate;
 	}
 
-	public SprintState getState() {
-		return state;
+	
+
+	public SprintState getSprintState() {
+		return sprintState;
 	}
 
-	public void setState(SprintState state) {
-		this.state = state;
+	public void setSprintState(SprintState sprintState) {
+		this.sprintState = sprintState;
 	}
 
 	public String getGoal() {
@@ -84,6 +89,8 @@ public class Sprint {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	
 	
 	
 	

@@ -15,7 +15,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="board_columns",indexes= {@Index(columnList="bosrd_id,position")})
+@Table(
+	    name = "board_columns",
+	    indexes = {
+	        @Index(columnList = "board_id, position")
+	    }
+	)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,12 +34,12 @@ public class BoardColumn {
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="board_id")
-	private Board boardId;
+	private Board board;
 	
-	private String boardName;
+	private String columnName;
 	private String statusKey;
 	
-	private Integer position;
+	private Integer  position;
 	private Integer wipeLimit;
 	
 
@@ -46,21 +51,8 @@ public class BoardColumn {
 		this.id = id;
 	}
 
-	public Board getBoardId() {
-		return boardId;
-	}
-
-	public void setBoardId(Board boardId) {
-		this.boardId = boardId;
-	}
-
-	public String getBoardName() {
-		return boardName;
-	}
-
-	public void setBoardName(String boardName) {
-		this.boardName = boardName;
-	}
+	
+	
 
 	public String getStatusKey() {
 		return statusKey;
@@ -84,6 +76,22 @@ public class BoardColumn {
 
 	public void setWipeLimit(Integer wipeLimit) {
 		this.wipeLimit = wipeLimit;
+	}
+
+	public String getColumnName() {
+		return columnName;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public Board getBoard() {
+		return board;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
 	}
 	
 	
