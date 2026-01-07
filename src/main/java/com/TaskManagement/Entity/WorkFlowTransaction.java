@@ -2,7 +2,7 @@ package com.TaskManagement.Entity;
 
 import java.util.Set;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.TaskManagement.Enum.IssueStatus;
 import com.TaskManagement.Enum.Role;

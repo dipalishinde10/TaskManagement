@@ -3,5 +3,12 @@ package com.TaskManagement.Enum;
 public enum Role {
 	ADMIN,
 	MANAGER,
-	USER
+	USER, 
+	DEVELOPER,
+	QA,
+	PRODUCTION,
+	SUPPORT,
+	NON_TECH,
+	DEVOPS, TESTER
+	
 }

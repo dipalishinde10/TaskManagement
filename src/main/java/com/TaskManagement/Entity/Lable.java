@@ -1,6 +1,6 @@
 package com.TaskManagement.Entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import lombok.*;
 

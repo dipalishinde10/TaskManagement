@@ -1,6 +1,7 @@
 package com.TaskManagement.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,12 @@ import com.TaskManagement.DTO.AuthenticationResponseDTO;
 import com.TaskManagement.DTO.LoginRequestDTO;
 import com.TaskManagement.DTO.RegisterRequestDTO;
 import com.TaskManagement.Entity.User;
+import com.TaskManagement.Enum.Permission;
+import com.TaskManagement.Enum.Role;
 import com.TaskManagement.Repository.UserRepository;
 import com.TaskManagement.Security.JWTUtil;
+import com.TaskManagement.Security.PermissionConfig;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +31,8 @@ public class UserService {
 	@Autowired
 	private JWTUtil jwtUtil;
 	
+	@Autowired
+	private PermissionConfig permissionConfig;
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -46,7 +53,7 @@ public class UserService {
 		user.setRole(request.getRole());
 		
 		userRepo.save(user);
-		String token = jwtUtil.generateToken(user.getUserEmail());
+		String token = jwtUtil.generateToken(user);
 		
 		return new AuthenticationResponseDTO(token,"User register succesfully");
 	}
@@ -60,7 +67,22 @@ public class UserService {
 			throw new RuntimeException("Invalid credentials");
 		}
 		
-		return jwtUtil.generateToken(user.getUserEmail());
+		return jwtUtil.generateToken(user);
+		
+	}
+	public User updateRole(Long id, Role role) {
+		User user = userRepo.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+         Role newRole=Role.valueOf(role.name());
+		user.setRole(newRole);
+		return userRepo.save(user);
+	}
+	public void deleteUser(Long id, User user) {
+		
+		Set<Permission> perm= permissionConfig.getRolePermission().get(user.getRole());
+		if(!perm.contains(Permission.USER_MANAGE)) {
+			throw new RuntimeException("Access defined");
+		}
+		userRepo.save(user);
 		
 	}
 }

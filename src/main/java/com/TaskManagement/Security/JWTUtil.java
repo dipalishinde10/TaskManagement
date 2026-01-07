@@ -2,9 +2,15 @@ package com.TaskManagement.Security;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import com.TaskManagement.Entity.User;
+import com.TaskManagement.Enum.Permission;
+
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,13 +31,17 @@ public class JWTUtil {
 		key=Keys.hmacShaKeyFor(secret.getBytes());
 	}
 	
-	public String generateToken(String subject) {
+	public String generateToken(User user) {
+		
+		Set<Permission> permissions=PermissionConfig.getRolePermission().get(user.getRole());
 		
 		Date now = new Date();
 		Date expiry = new Date(now.getTime()+expirationTokenMS);
 		
 		return Jwts.builder()
-				.setSubject(subject)
+				.setSubject(user.getUserEmail())
+				.claim("role", user.getRole().name())
+				.claim("permission", permissions.stream().map(Enum::name).collect(Collectors.toList()))
 				.setIssuedAt(now)
 				.setExpiration(expiry)
 				.signWith(key,SignatureAlgorithm.HS256)
@@ -57,6 +67,14 @@ public class JWTUtil {
 				.parseClaimsJws(token)
 				.getBody()
 				.getSubject();
+	}
+	
+	public Claims getClaim(String token) {
+		return Jwts.parserBuilder()
+				.setSigningKey(key)
+				.build()
+				.parseClaimsJws(token)
+				.getBody();
 	}
 
 }

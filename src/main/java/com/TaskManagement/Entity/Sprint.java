@@ -2,7 +2,7 @@ package com.TaskManagement.Entity;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import com.TaskManagement.Enum.SprintState;
 

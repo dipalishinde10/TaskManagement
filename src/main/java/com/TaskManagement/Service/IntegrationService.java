@@ -28,8 +28,8 @@ public class IntegrationService {
 			
 			Long issueId= Long.valueOf(issueKey.split("-")[1]);
 			
-			issueclient.updateStatus(issueId,IssueStatus.DONE, author);
-			issueclient.addCommit(issueId, author, "Automarically close by commit:"+commitMsg);
+			issueclient.status(issueId,IssueStatus.DONE, author);
+			issueclient.commit(issueId, author, "Automarically close by commit:"+commitMsg);
 			
 		}
 			}
@@ -44,8 +44,8 @@ public class IntegrationService {
 			String issueKey =matcher.group(1) ;
 			Long issueId=Long.valueOf(issueKey.split("-")[1]);
 			
-			issueclient.updateStatus(issueId,IssueStatus.IN_PROGRESS , issueKey);
-			issueclient.addCommit(issueId, author, "Pull Request opened:"+title);
+			issueclient.status(issueId,IssueStatus.IN_PROGRESS , issueKey);
+			issueclient.commit(issueId, author, "Pull Request opened:"+title);
 	
 	      }
 	}
@@ -91,12 +91,12 @@ public class IntegrationService {
 				return;
 			}
 			
-			@SuppressWarnings("unchecked")
+			//@SuppressWarnings("unchecked")
 			Map<String,Object> pr =(Map<String,Object>)prObj;
 			String title = (String)pr.get("title");
 			
 			
-			@SuppressWarnings("unchecked")
+			//@SuppressWarnings("unchecked")
 			Map<String,Object>userMap= (Map<String,Object>)pr.getOrDefault("user",Map.class);
 			
 			String author = (String)userMap.getOrDefault("login", "Unknown");
@@ -119,8 +119,8 @@ public class IntegrationService {
 		if(m.find()) {
 			Long issueId = Long.parseLong(m.group(1).split("_")[1]);
 			
-			issueclient.updateStatus(issueId, IssueStatus.DONE, user);
-			issueclient.addCommit(issueId, user, "Auto_closed via commit"+commitMsg);
+			issueclient.status(issueId, IssueStatus.DONE, user);
+			issueclient.commit(issueId, user, "Auto_closed via commit"+commitMsg);
 			
 		}
 	}
@@ -134,7 +134,7 @@ public class IntegrationService {
 		if(m.find()) {
 			
 			Long issueId= Long.parseLong(m.group(1).split("_")[1]);
-			issueclient.updateStatus(issueId, IssueStatus.IN_PROGRESS, user);
+			issueclient.status(issueId, IssueStatus.IN_PROGRESS, user);
 			
 		}
 	}
@@ -152,7 +152,7 @@ public class IntegrationService {
 			Long issueId = Long.parseLong(m.group(1).split("_")[1]);
 			
 			if(result.equals("FAILURE")) {
-				issueclient.addCommit(issueId, "Jenkins", "Build Faied\n''''\n"+log+"\n''''");
+				issueclient.commit(issueId, "Jenkins", "Build Faied\n''''\n"+log+"\n''''");
 				
 			}
 		}
@@ -164,9 +164,9 @@ public class IntegrationService {
 	    String image =(String) payload.get("from");
 	    
 	    
-	    @SuppressWarnings("unchecked")
+	    //@SuppressWarnings("unchecked")
 		Map<String,Object> actor=(Map<String,Object>) payload.get("Actor");
-	    @SuppressWarnings("unchecked")
+	    //@SuppressWarnings("unchecked")
 		Map<String,Object> attributes=actor !=null? (Map<String,Object>)actor.get("Attribute"):null;
 	    
 	    String containerName=attributes !=null? (String)attributes.get("Name"):"";
@@ -186,31 +186,31 @@ public class IntegrationService {
 	    
 	    case "start":
 	    	
-	    	issueclient.updateStatus(issueId, IssueStatus.DEPLOYMENT, "Docker");
-	    	issueclient.addCommit(issueId, "Docker", "Container started |Image:" + imageName);
+	    	issueclient.status(issueId, IssueStatus.DEPLOYMENT, "Docker");
+	    	issueclient.commit(issueId, "Docker", "Container started |Image:" + imageName);
 	    	
 	    	break;
 	    	
 	    case "die":
-	    	issueclient.updateStatus(issueId,IssueStatus.BLOCKS , "Docker");
-	    	issueclient.addCommit(issueId, "Docker", "Container creashed|Image:"+imageName);
+	    	issueclient.status(issueId,IssueStatus.BLOCKS , "Docker");
+	    	issueclient.commit(issueId, "Docker", "Container creashed|Image:"+imageName);
 	    	
 	    	break;
 	    	
 	    	
 	    case "pull"	:
-	    	issueclient.addCommit(issueId, "Docker", "Image pulled:"+imageName);
+	    	issueclient.commit(issueId, "Docker", "Image pulled:"+imageName);
 	    	break;
 	    	
 	    case "build":
 	    	
-	    	issueclient.addCommit(issueId, "docker", "Docker image build :"+imageName);
+	    	issueclient.commit(issueId, "docker", "Docker image build :"+imageName);
 	    	break;
 	    	
 	   
 	    	default:
 	    		
-	    		issueclient.addCommit(issueId, "Docker", "Docker Event:" +status+"|Image"+imageName);
+	    		issueclient.commit(issueId, "Docker", "Docker Event:" +status+"|Image"+imageName);
 	    }
 	}
 	
